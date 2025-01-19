@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Notes Saver</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1, h3 {
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        textarea, input[type="date"] {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                margin: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            textarea, input[type="date"], button {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            textarea, input[type="date"], button {
+                font-size: 12px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Notes Saver</h1>
+    <div class="container">
+        <h3>Add a Note:</h3>
+        <textarea id="noteInput" placeholder="Write your note here..." rows="5"></textarea>
+        <input type="date" id="noteDate">
+        <button onclick="saveNote()">Save Note</button>
+
+        <h3>Retrieve Notes by Date:</h3>
+        <input type="date" id="retrieveDate">
+        <button onclick="getNoteByDate()">Get Note</button>
+
+        <div id="output"></div>
+    </div>
+
+    <script>
+        // Save Note Function
+        function saveNote() {
+            const note = document.getElementById("noteInput").value;
+            const date = document.getElementById("noteDate").value;
+
+            if (!note || !date) {
+                alert("Please fill both note and date!");
+                return;
+            }
+
+            // Get existing notes or initialize empty array
+            const notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+            // Add new note
+            notes.push({ date, note });
+            localStorage.setItem("notes", JSON.stringify(notes));
+
+            alert("Note saved successfully!");
+            document.getElementById("noteInput").value = ""; // Clear input
+        }
+
+        // Retrieve Note by Date Function
+        function getNoteByDate() {
+            const date = document.getElementById("retrieveDate").value;
+
+            if (!date) {
+                alert("Please select a date!");
+                return;
+            }
+
+            const notes = JSON.parse(localStorage.getItem("notes")) || [];
+            const note = notes.find(n => n.date === date);
+
+            const outputDiv = document.getElementById("output");
+            if (note) {
+                outputDiv.innerHTML = `<h4>Note for ${date}:</h4><p>${note.note}</p>`;
+            } else {
+                outputDiv.innerHTML = `<p>No notes found for ${date}.</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
+
+
